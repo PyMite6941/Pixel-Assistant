@@ -182,8 +182,8 @@ Located at project root. Edit directly or use `/set <key> <value>` in Pixel.
 | Key | Default | Description |
 |---|---|---|
 | `provider` | `groq` | Active LLM provider |
-| `model` | `llama-3.1-8b-instant` | Fast model |
-| `smart_model` | `llama-3.3-70b-versatile` | Smart model (toggle with `/smart`) |
+| `model` | `openai/gpt-oss-20b` | Fast model |
+| `smart_model` | `openai/gpt-oss-120b` | Smart model (toggle with `/smart`) |
 | `voice_enabled` | `false` | Auto-start voice mode |
 | `tts_rate` | `150` | TTS speech rate (words/min) |
 | `tts_volume` | `1.0` | TTS volume (0.0–1.0) |

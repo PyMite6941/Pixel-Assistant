@@ -176,7 +176,7 @@ class StatusBar(Static):
 
     def on_mount(self):
         self._provider = "groq"
-        self._model = "llama-3.1-8b-instant"
+        self._model = "openai/gpt-oss-20b"
         self._smart = False
         self._skills_count = 0
         self._uptime = "0:00:00"

@@ -2,10 +2,10 @@ auto_lang: false
 debug: false
 log_conversations: true
 max_history: 20
-model: llama-3.1-8b-instant
+model: openai/gpt-oss-20b
 provider: groq
 smart_mode: false
-smart_model: llama-3.3-70b-versatile
+smart_model: openai/gpt-oss-120b
 tts_engine: pyttsx3
 tts_rate: 150
 tts_volume: 1.0

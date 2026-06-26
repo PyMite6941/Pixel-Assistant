@@ -43,23 +43,13 @@ export default function SettingsPanel({
         </div>
         {[
           {
-            name: 'llama-3.3-70b-versatile',
-            desc: 'Best overall \u2014 smart, fast, great reasoning. Default choice.',
+            name: 'openai/gpt-oss-120b',
+            desc: 'Best overall \u2014 smart, fast, strong reasoning. Default choice.',
             provider: 'groq',
           },
           {
-            name: 'llama-3.1-8b-instant',
+            name: 'openai/gpt-oss-20b',
             desc: 'Fastest \u2014 instant replies, good for quick lookups.',
-            provider: 'groq',
-          },
-          {
-            name: 'deepseek-r1-distill-llama-70b',
-            desc: 'Shows chain-of-thought. Best for hard math/logic problems.',
-            provider: 'groq',
-          },
-          {
-            name: 'gemma2-9b-it',
-            desc: 'Google compact model \u2014 light tasks, efficient.',
             provider: 'groq',
           },
         ].map((m) => (

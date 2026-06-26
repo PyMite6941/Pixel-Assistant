@@ -12,8 +12,10 @@ CONFIG_FILE = BASE_DIR / "config.yaml"
 
 DEFAULTS = {
     "provider": "groq",
-    "model": "llama-3.1-8b-instant",
-    "smart_model": "llama-3.3-70b-versatile",
+    # Groq deprecated llama-3.1-8b-instant and llama-3.3-70b-versatile (announced 2026-06-17);
+    # migrated to the GA gpt-oss models.
+    "model": "openai/gpt-oss-20b",
+    "smart_model": "openai/gpt-oss-120b",
     "voice_enabled": False,
     "tts_engine": "pyttsx3",
     "tts_rate": 150,
