@@ -1,0 +1,65 @@
+# LLM providers
+groq
+google-genai
+mistralai
+
+# Config & env
+python-dotenv
+pyyaml
+
+# Terminal UI
+rich
+
+# TTS / STT
+pyttsx3
+SpeechRecognition
+PyAudio
+soundfile
+numpy
+
+# Optional — offline STT via --whisper flag (adds ~1.3 GB: torch, scipy, transformers)
+# pip install openai-whisper
+
+# Textual TUI
+textual>=1.0.0
+
+# System tray
+pystray
+Pillow
+
+# Search & web
+requests
+beautifulsoup4
+
+# Document generation
+python-pptx
+fpdf2
+
+# Google Calendar
+google-api-python-client
+google-auth-oauthlib
+google-auth-httplib2
+tzlocal
+
+# Web UI
+fastapi
+uvicorn[standard]
+websockets
+python-multipart
+
+# Security & encryption
+cryptography
+bleak  # optional — BLE device scanning (pip install bleak)
+psutil
+
+# Clipboard (cross-platform)
+pyperclip
+
+# QR code generation
+qrcode[pil]
+
+# ASCII art
+pyfiglet
+
+# Screenshots
+pyautogui

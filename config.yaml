@@ -1,0 +1,13 @@
+auto_lang: false
+debug: false
+log_conversations: true
+max_history: 20
+model: llama-3.1-8b-instant
+provider: groq
+smart_mode: false
+smart_model: llama-3.3-70b-versatile
+tts_engine: pyttsx3
+tts_rate: 150
+tts_volume: 1.0
+voice_enabled: false
+wake_word: hey pixel

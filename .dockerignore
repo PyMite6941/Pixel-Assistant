@@ -1,0 +1,15 @@
+.venv/
+logs/
+generated/
+__pycache__/
+*.pyc
+.env
+.git
+.gitignore
+README.md
+*.md
+setup.bat
+start.bat
+start_web.bat
+setup_shortcut.py
+training/
