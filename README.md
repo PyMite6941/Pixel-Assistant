@@ -1,201 +1,157 @@
 # Pixel Assistant
 
-A modular AI assistant for the terminal. Supports multiple LLM providers, voice, timers, notes, todos, calendar, file generation, and self-updating.
+A modular AI assistant for the terminal with a Textual-based TUI, IoT bridges, P2P mesh networking, BLE scanning, image generation, and 17 domain panels.
 
 ---
 
 ## Quick Start
 
 ```bash
-# Install dependencies
 pip install -r requirements.txt
-
-# Run
-python src/run.py
-```
-
-Or double-click `start.bat` on Windows.
-
----
-
-## Launch Options
-
-```bash
-python src/run.py                    # default (text mode, Groq)
-python src/run.py --provider gemini  # use Gemini
-python src/run.py --provider mistral # use Mistral
-python src/run.py --smart            # use the 70B model
-python src/run.py --voice-only       # voice input/output mode
-python src/run.py --debug            # show routing info
-python src/run.py --whisper          # offline speech-to-text (Whisper tiny)
+python src/run.py                # text mode
+python src/run.py --tui          # TUI mode (recommended)
+python start_tui.bat             # TUI launcher (Windows)
 ```
 
 ---
 
-## Commands
+## TUI Mode
+
+The TUI (Terminal User Interface) provides a sidebar with 17 domain panels:
+
+| Domain | Description |
+|--------|-------------|
+| Chat | Conversational AI with auto-skill suggestions |
+| Skills | Browse all 39+ registered commands |
+| Notes | Create, search, delete notes |
+| Todos | Task management with add/done/clear |
+| Calendar | Google Calendar integration |
+| System | CPU, RAM, disk, network stats |
+| Agents | Spawn orchestrator/explorer/coder/debugger agents |
+| Screen | Screenshot & screen recording (GIF) |
+| Meetings | Meeting notes with live transcription & AI summary |
+| Files | Generate PDFs, slides, QR codes |
+| Images | Browse local AI images, generate with /imagine, use as context |
+| Network | Public/local IP, ping, diff, encode/decode, UUID |
+| Security | Port audit, encryption/hash tools |
+| Language | Translate, define, summarize, teach |
+| Memory | Persistent facts, recall, forget |
+| IoT | Device registry, MQTT, webhooks, rules engine, sensor simulation |
+| P2P | LAN peer discovery, device sync, mesh networking |
+
+**Keyboard shortcuts:**
+- `F1` — Help / shortcuts reference
+- `F2` — Focus skills sidebar
+- `Ctrl+Shift+S` — Screenshot
+- `Ctrl+Shift+M` — Start/stop screen recording
+- `Ctrl+Shift+V` — Voice toggle (requires PyAudio)
+- `F8` — Toggle system tray
+
+---
+
+## IoT & Networked Devices
+
+Discover and control real devices on your LAN:
+
+| Command | Protocol | Description |
+|---------|----------|-------------|
+| `/hue discover` | Philips Hue | Find Hue bridges via cloud API + SSDP |
+| `/hue register <ip>` | REST | Register with bridge (press link button first) |
+| `/hue lights` | REST | List all Hue lights |
+| `/hue on/off/dim <id>` | REST | Control Hue lights |
+| `/kasa discover` | TP-Link Kasa | Scan LAN for Kasa smart devices |
+| `/kasa on/off <ip>` | Kasa binary | Control Kasa plugs/switches |
+| `/ha status` | Home Assistant | Check HA connection |
+| `/ha entities` | REST | List all HA entities |
+| `/ha service <d> <s>` | REST | Call HA service |
+| `/ssdp` | UPnP/SSDP | Discover UPnP devices on network |
+| `/rest get/post <url>` | Generic REST | Control any REST API device |
+| `/ble [secs]` | BLE | Scan for Bluetooth Low Energy devices |
+| `/iot discover` | TCP | Scan LAN for open IoT ports |
+| `/iot mqtt ...` | MQTT | MQTT broker connect/publish/subscribe |
+| `/iot webhook ...` | HTTP | Webhook server for device read/write |
+| `/iot rule ...` | Rules | IF-THEN automation rules engine |
+| `/p2p discover` | UDP | LAN peer discovery for mesh networking |
+
+Credentials are encrypted at rest (AES-256-GCM via machine-derived key).
+
+---
+
+## Image Generation
+
+| Command | Description |
+|---------|-------------|
+| `/imagine <prompt>` | Generate AI image (Pollinations.ai, no key needed) |
+| `/images [keyword]` | Browse local generated images |
+| `/imagesource <n\|name>` | Use an image as AI source/context |
+| `generate an image of X` | Natural language shortcut |
+
+---
+
+## Screen & Media
+
+| Command | Description |
+|---------|-------------|
+| `/screenshot` | Capture screen (Ctrl+Shift+S in TUI) |
+| `/record start` | Start screen recording (GIF) |
+| `/record stop` | Stop recording |
+| `/record status` | Show recording state |
+| `/record list` | List recordings |
+
+---
+
+## Chat Commands
 
 ### General
-
-| Command | Description |
-|---|---|
-| `/help` | List all commands |
-| `/status` | Show current provider, model, and settings |
-| `/models` | List available Groq models |
-| `/smart` | Toggle 70B smart mode on/off |
-| `/clear` | Clear conversation history |
-| `/history` | Show last 20 conversation turns |
+`/help`, `/status`, `/models`, `/smart`, `/clear`, `/history`
 
 ### Notes
-
-| Command | Description |
-|---|---|
-| `/note <text>` | Save a note |
-| `/notes` | List all notes |
-| `/note search <keyword>` | Search notes |
-| `/note delete <n>` | Delete note by number |
-| `/note delete last` | Delete the most recent note |
-| `/note clear` | Delete all notes |
+`/note <text>`, `/notes`, `/note search <kw>`, `/note delete <n>`
 
 ### Todos
-
-| Command | Description |
-|---|---|
-| `/todo` | List all todos |
-| `/todo add <task>` | Add a todo |
-| `/todo done <n>` | Mark todo as done |
-| `/todo delete <n>` | Delete a todo |
-| `/todo clear` | Remove all completed todos |
+`/todo`, `/todo add <task>`, `/todo done <n>`, `/todo delete <n>`, `/todo clear`
 
 ### Journal & Memory
+`/journal <entry>`, `/remember <fact>`, `/memories`, `/forget <kw>`
 
-| Command | Description |
-|---|---|
-| `/journal <entry>` | Add a journal entry for today |
-| `/journal` | View today's journal entries |
-| `/remember <fact>` | Save a persistent memory |
-| `/memories` | List all memories |
-| `/forget <keyword>` | Delete memories matching keyword |
+### Timers
+`/timer <dur>`, `/remind <dur> <msg>`, `/pomodoro`, `/check`, `/morning`
 
-### Timers & Productivity
-
-| Command | Description |
-|---|---|
-| `/timer <duration>` | Start a countdown timer (e.g. `5min`, `30s`, `2h`) |
-| `/remind <duration> <msg>` | Set a reminder (e.g. `/remind 10min call John`) |
-| `/pomodoro` | Start a 25/5 Pomodoro session (4 cycles) |
-| `/pomodoro <work>/<break>` | Custom Pomodoro (e.g. `/pomodoro 50/10`) |
-| `/check` | Show overdue todos + upcoming calendar events |
-| `/morning` | Daily briefing: weather, calendar, todos |
-
-### Writing & Language
-
-| Command | Description |
-|---|---|
-| `/email <description>` | Draft a professional email |
-| `/translate <lang> <text>` | Translate text to a language |
-| `/summarize [text]` | Summarize text or last response |
-| `/define <word>` | Get a structured word definition |
-| `/code <task>` | Ask the LLM to write code |
-| `/teach <topic>` | Get a structured lesson on any topic |
-| `/teach quiz` | Quiz on the last studied topic |
-| `/teach topics` | List all studied topics |
-| `/teach reset` | Clear study history |
+### Language
+`/translate <lang> <text>`, `/define <word>`, `/summarize`, `/teach <topic>`, `/code <task>`
 
 ### File Generation
+`/slides <topic>`, `/pdf <topic>`, `/themes`
 
-| Command | Description |
-|---|---|
-| `/slides <topic>` | Generate a PowerPoint presentation |
-| `/pdf <topic>` | Generate a PDF document |
-| `/themes` | List available themes and current settings |
+### Calendar
+`/calendar`, `/calendar today`, `/calendar add <desc>`, `/calendar delete <id>`
 
-### Calendar (Google Calendar)
-
-| Command | Description |
-|---|---|
-| `/calendar` | List events for the next 7 days |
-| `/calendar today` | List today's events |
-| `/calendar add <description>` | Add an event using natural language |
-| `/calendar delete <id>` | Delete an event by ID |
-| `/calendar setup` | Show Google Calendar setup instructions |
-
-### System & Tools
-
-| Command | Description |
-|---|---|
-| `/calc <expr>` | Evaluate a math expression |
-| `/weather [city]` | Get current weather (default: auto by IP) |
-| `/wiki <topic>` | Look up a Wikipedia summary |
-| `/sys` | Show CPU, RAM, and disk usage |
-| `/run <python code>` | Execute Python code in a subprocess |
-| `/open <path>` | Open a file with its default app |
-| `/speak <text>` | Read text aloud via TTS |
-| `/clip` | Copy last response to clipboard |
-| `/lang auto` | Auto-detect and match the user's language |
-| `/lang off` | Disable auto language detection |
+### System
+`/calc`, `/weather`, `/wiki`, `/sys`, `/run`, `/open`, `/speak`, `/clip`
 
 ### Configuration
+`/set provider <groq|gemini|mistral>`, `/set model <name>`, `/set persona <text>`
 
-| Command | Description |
-|---|---|
-| `/set provider <groq\|gemini\|mistral>` | Switch LLM provider |
-| `/set model <name>` | Set the model name |
-| `/set persona <text>` | Set the assistant's persona/system prompt |
-| `/set <key> <value>` | Set any config value |
+### Agents
+`/agent <task>` — spawns orchestrator agent to solve complex tasks
 
 ### Self-Update
-
-| Command | Description |
-|---|---|
-| `/update check` | Ask LLM to audit the codebase for bugs |
-| `/update feature <desc>` | Add a new feature via LLM |
-| `/update fix <desc>` | Fix a specific issue via LLM |
-| `/update log` | Show the last 20 self-update entries |
-| `/update rollback` | Revert to the last backup of main.py |
-
----
-
-## Natural Language Shortcuts
-
-These phrases are recognized without a `/` prefix:
-
-| Say | Action |
-|---|---|
-| "what time is it" | Current time |
-| "what day is it" | Current date |
-| "open browser" / "open google" | Opens browser |
-| "take a screenshot" | Screenshot |
-| "search for X" | Web search |
-| "generate an image of X" | Image generation |
-| "what's on my calendar" | `/calendar` |
-| "switch to groq/gemini/mistral" | Switch provider |
-
----
-
-## Google Calendar Setup
-
-1. Go to [console.cloud.google.com](https://console.cloud.google.com)
-2. Create a project → **APIs & Services** → Enable **Google Calendar API**
-3. **Credentials** → **+ Create Credentials** → **OAuth 2.0 Client ID** (Desktop app)
-4. Download the JSON and save it as `credentials.json` in this project root
-5. Run `/calendar` — a browser tab opens for one-time login, token is saved automatically
+`/update check`, `/update feature <desc>`, `/update fix <desc>`, `/update log`
 
 ---
 
 ## API Keys
 
-Add your keys to `config.yaml` or a `.env` file in the project root:
+Add to `.env` in project root:
 
-```yaml
-groq_key: "your-groq-key"
-gemini_key: "your-gemini-key"
-mistral_key: "your-mistral-key"
 ```
-
-Get keys at:
-- Groq: [console.groq.com](https://console.groq.com)
-- Gemini: [aistudio.google.com](https://aistudio.google.com)
-- Mistral: [console.mistral.ai](https://console.mistral.ai)
+GROQ_KEY=your-groq-key         # required (default provider)
+GEMINI_KEY=your-gemini-key     # optional
+MISTRAL_KEY=your-mistral-key   # optional
+HF_TOKEN=your-hf-token         # optional (HuggingFace image fallback)
+HA_URL=http://ha.local:8123    # optional (Home Assistant)
+HA_TOKEN=your-ha-token         # optional
+```
 
 ---
 
@@ -204,26 +160,74 @@ Get keys at:
 ```
 Pixel Assistant/
 ├── src/
-│   ├── main.py              # Core assistant logic and all commands
-│   ├── run.py               # Entry point (CLI args, venv check)
+│   ├── main.py                  # Core assistant logic
+│   ├── run.py                   # Entry point (CLI args)
+│   ├── core_files/
+│   │   ├── tui_app.py           # Textual TUI (17 panels)
+│   │   ├── ui.py                # Text-mode UI
+│   │   ├── voice.py             # Voice I/O
+│   │   ├── tray.py              # System tray
+│   │   ├── auth.py              # Password protection
+│   │   ├── config.py            # Configuration
+│   │   └── platform.py          # Cross-platform utilities
 │   ├── skills/
-│   │   ├── calendar_gcal.py # Google Calendar integration
-│   │   ├── slides.py        # PowerPoint generation
-│   │   ├── pdf_gen.py       # PDF generation
-│   │   ├── image_gen.py     # Image generation
-│   │   ├── video_gen.py     # Video generation
-│   │   └── self_update.py   # Self-update / backup logic
-│   └── functionalities/
-│       ├── chat-history.json
-│       ├── notes.txt
-│       ├── todos.json
-│       ├── memories.md
-│       ├── journal.md
-│       ├── teach_history.json
-│       ├── update_log.json
-│       └── backups/         # main.py backups before each self-update
-├── credentials.json         # Google OAuth client (you provide)
-├── config.yaml              # API keys and settings
+│   │   ├── __init__.py          # Plugin system with @command decorator
+│   │   ├── agent.py             # Multi-agent orchestration
+│   │   ├── iot.py               # IoT hub: MQTT, webhooks, rules, sensors
+│   │   ├── iot_bridge.py        # Real device bridges (Hue, Kasa, HA, SSDP, REST)
+│   │   ├── ble_scanner.py       # BLE device scanning
+│   │   ├── p2p.py               # P2P mesh networking
+│   │   ├── image_gen.py         # Pollinations.ai + HuggingFace image gen
+│   │   ├── image_browser.py     # Local image management
+│   │   ├── screen_capture.py    # Screenshot + GIF recording
+│   │   ├── meeting_notes.py     # Meeting transcription + AI summary
+│   │   ├── model_manager.py     # Provider rate limits & switching
+│   │   ├── memory.py            # RAG memory system
+│   │   ├── calendar_gcal.py     # Google Calendar
+│   │   ├── slides.py            # PowerPoint generation
+│   │   ├── pdf_gen.py           # PDF generation
+│   │   ├── net_tools.py         # Public IP, ping
+│   │   ├── language.py          # Translation, definitions
+│   │   ├── system_control.py    # System info
+│   │   ├── text_tools.py        # Encode/decode, uuid, ascii art
+│   │   ├── weather.py           # Weather lookup
+│   │   ├── video_gen.py         # Video generation
+│   │   └── self_update.py       # LLM-powered self-modification
+│   ├── api/
+│   │   └── app.py               # FastAPI web server
+│   └── agents/
+│       ├── basic.md             # Basic agent prompt
+│       └── vibe-coder.md        # Vibe coder agent prompt
+├── tests/
+│   ├── run_all.py               # Test runner
+│   ├── test_iot_network.py      # 14 IoT/P2P/BLE/bridge tests
+│   ├── test_agent.py
+│   ├── test_memory.py
+│   ├── test_platform.py
+│   ├── test_skills_init.py
+│   └── test_ui.py
 ├── requirements.txt
-└── start.bat                # Windows launcher
+├── config.yaml
+├── start.bat                    # Text-mode launcher
+├── start_tui.bat                # TUI launcher
+└── start_web.bat                # Web UI launcher
 ```
+
+---
+
+## Testing
+
+```bash
+python tests/run_all.py
+```
+26 tests across 6 modules covering agent system, memory, IoT, P2P, BLE, bridges, platform, UI, and plugin system.
+
+---
+
+## Security
+
+- Bridge credentials (Hue usernames) are encrypted at rest via AES-256-GCM with a machine-derived key
+- Home Assistant tokens come from environment variables, never stored in files
+- Webhook server has no authentication — only enable on trusted networks
+- P2P uses plain UDP with no encryption — LAN-only, do not route to internet
+- TP-Link Kasa uses unencrypted binary protocol — LAN-only
